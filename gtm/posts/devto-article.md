@@ -120,7 +120,7 @@ This skill bridges the gap between what AI assistants naturally know (Debian/Ubu
 
 ## Open Source
 
-MIT licensed, contributions welcome:
+GPL-3.0 licensed, contributions welcome:
 
 - GitHub: [ankaboot-source/manjaro-skill](https://github.com/ankaboot-source/manjaro-skill)
 - SkillsHub: [skillshub.wtf/ankaboot/manjaro-system-administration](https://skillshub.wtf/ankaboot/manjaro-system-administration)

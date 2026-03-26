@@ -42,4 +42,4 @@ Now your AI thinks:
 
 GitHub: https://github.com/ankaboot-source/manjaro-skill
 
-MIT licensed. Contributions welcome!
+GPL-3.0 licensed. Contributions welcome!

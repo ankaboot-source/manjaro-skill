@@ -82,7 +82,7 @@ The skill adds a `/manjaro` slash command:
 - LobeHub: https://lobehub.com/skills/ankaboot-source/manjaro-skill
 - Registry: Skills.sh (npx skills add ankaboot-source/manjaro-skill)
 
-It's MIT licensed, works with OpenCode, Claude Code, Codex, and Cursor. The skill is in `~/.config/opencode/skills/manjaro/` after install.
+It's GPL-3.0 licensed, works with OpenCode, Claude Code, Codex, and Cursor. The skill is in `~/.config/opencode/skills/manjaro/` after install.
 
 Would love feedback from the community — especially if you find places where the troubleshooting flows need improvement!
 

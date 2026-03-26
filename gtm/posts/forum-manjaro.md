@@ -68,6 +68,6 @@ After install, AI assistants automatically use pacman when you ask to install so
 - SkillsHub: https://skillshub.wtf/ankaboot/manjaro-system-administration
 - LobeHub: https://lobehub.com/skills/ankaboot-source/manjaro-skill
 
-MIT licensed. Works on any Arch-based system, not just Manjaro.
+GPL-3.0 licensed. Works on any Arch-based system, not just Manjaro.
 
 Feedback and contributions welcome!
