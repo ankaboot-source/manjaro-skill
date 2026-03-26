@@ -28,7 +28,7 @@ A unified Manjaro Linux system administration skill for AI coding assistants (Op
 
 ### One-line (any terminal)
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ankaboot-source/manjaro-skill/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ankaboot-source/manjaro-skill/master/install.sh | bash
 ```
 
 ### Manual
