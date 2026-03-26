@@ -1,0 +1,78 @@
+name: Validate Skill Structure
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check SKILL.md exists
+        run: |
+          if [ ! -f SKILL.md ]; then
+            echo "ERROR: SKILL.md not found"
+            exit 1
+          fi
+          echo "SKILL.md exists"
+
+      - name: Validate frontmatter
+        run: |
+          if ! grep -q "^name:" SKILL.md; then
+            echo "ERROR: 'name' field missing from frontmatter"
+            exit 1
+          fi
+          if ! grep -q "^description:" SKILL.md; then
+            echo "ERROR: 'description' field missing from frontmatter"
+            exit 1
+          fi
+          echo "Frontmatter valid"
+
+      - name: Check directory structure
+        run: |
+          if [ ! -d commands ]; then
+            echo "ERROR: commands/ directory missing"
+            exit 1
+          fi
+          if [ ! -d references ]; then
+            echo "ERROR: references/ directory missing"
+            exit 1
+          fi
+          echo "Directory structure valid"
+
+      - name: Check required files
+        run: |
+          if [ ! -f commands/manjaro.md ]; then
+            echo "ERROR: commands/manjaro.md missing"
+            exit 1
+          fi
+          if [ ! -f references/packages.md ]; then
+            echo "ERROR: references/packages.md missing"
+            exit 1
+          fi
+          if [ ! -f references/systemd-recipes.md ]; then
+            echo "ERROR: references/systemd-recipes.md missing"
+            exit 1
+          fi
+          if [ ! -f references/troubleshooting.md ]; then
+            echo "ERROR: references/troubleshooting.md missing"
+            exit 1
+          fi
+          echo "All required files present"
+
+      - name: Validate markdown links
+        run: |
+          # Check for broken internal links (basic check)
+          for md in SKILL.md references/*.md; do
+            if [ -f "$md" ]; then
+              # Check for common broken link patterns
+              if grep -q '\[\[.*\]\]' "$md"; then
+                echo "WARNING: Potential wiki-style link in $md"
+              fi
+            fi
+          done
+          echo "Link check complete"

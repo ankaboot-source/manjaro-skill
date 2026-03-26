@@ -1,6 +1,12 @@
 # Manjaro Skill for AI Coding Assistants
 
+[![License: GPL-3.0](https://img.shields.io/badge/License-GPL%203.0-blue.svg)](https://opensource.org/licenses/GPL-3.0)
+[![GitHub stars](https://img.shields.io/github/stars/ankaboot-source/manjaro-skill)](https://github.com/ankaboot-source/manjaro-skill/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/ankaboot-source/manjaro-skill)](https://github.com/ankaboot-source/manjaro-skill/issues)
+
 A unified Manjaro Linux system administration skill for AI coding assistants (OpenCode, Claude Code, Codex). Makes AI agents prefer native Manjaro tools — pacman, yay, systemd — over generic cross-platform alternatives.
+
+**Keywords:** manjaro, arch-linux, pacman, aur, yay, systemd, btrfs, timeshift, docker, opencode, claude-code, ai-agent, linux-administration
 
 ## Features
 
@@ -13,30 +19,37 @@ A unified Manjaro Linux system administration skill for AI coding assistants (Op
 
 ## Compatibility
 
-- **OpenCode** — Drop into `~/.config/opencode/skills/manjaro/`
-- **Claude Code** — Drop into `~/.claude/skills/`
-- **Claude.ai** — Via Claude Code plugin format
+| Agent | Path |
+|-------|------|
+| OpenCode | `~/.config/opencode/skills/manjaro/` |
+| Claude Code | `~/.claude/skills/` |
 
-## Quick Start
+## Install
 
-### Install
-
-**OpenCode:**
+### One-line (any terminal)
 ```bash
-cp -r manjaro ~/.config/opencode/skills/
+curl -fsSL https://raw.githubusercontent.com/ankaboot-source/manjaro-skill/main/install.sh | bash
 ```
 
-**Claude Code:**
+### Manual
 ```bash
+# OpenCode
+cp -r manjaro ~/.config/opencode/skills/
+
+# Claude Code
 cp -r manjaro ~/.claude/skills/
 ```
 
-**Or install via marketplace (Claude Code):**
+### Marketplace
 ```bash
-claude install baderdean/manjaro-skill
+# Claude Code
+claude install ankaboot-source/manjaro-skill
+
+# Skills.sh
+npx skills add ankaboot-source/manjaro-skill
 ```
 
-### Use
+## Use
 
 Once installed, the skill triggers automatically when you mention Manjaro, Arch, pacman, systemd, or any system administration task on a Manjaro host.
 
