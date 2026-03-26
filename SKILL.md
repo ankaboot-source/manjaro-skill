@@ -57,20 +57,24 @@ When suggesting commands that modify the system:
 
 ### GUI Password Prompt (kdesu)
 
-If the system has a graphical environment (KDE, etc.), prefer `kdesu` for commands requiring sudo:
+If the system has a graphical environment (KDE), use `kdesu` for commands requiring sudo:
 
 ```bash
 /usr/lib/kf6/kdesu -c "pacman -S <package>"
 ```
 
-This launches a GUI password dialog instead of requiring terminal sudo.
+**⚠️ WARNING: This will execute the command with ROOT PRIVILEGES immediately after you enter your password.**
 
 **Check for kdesu:**
 ```bash
 which /usr/lib/kf6/kdesu
 ```
 
-If available, use it instead of bare `sudo` for package installation commands.
+**Always explain before running kdesu:**
+1. State clearly: "I need to run this command with root privileges to install the package"
+2. Show the exact command that will run
+3. Warn: "This will install <package> and all its dependencies from the Manjaro repositories"
+4. Wait for user confirmation before executing
 
 ## Core Principle: Pacman First
 
@@ -85,16 +89,18 @@ When the user needs to install software, follow this order:
 ```
 1. Is it available via pacman?
    $ pacman -Ss <name>
-   YES -> Use kdesu if available, otherwise sudo:
-          /usr/lib/kf6/kdesu -c "pacman -S <package>"
-          # or if kdesu not available:
-          sudo pacman -S <package>
+   YES -> WARNING: This will install "<package>" with ROOT privileges.
+          If kdesu available:
+             /usr/lib/kf6/kdesu -c "pacman -S <package>"
+          Otherwise:
+             sudo pacman -S <package>
    NO  -> go to step 2
 
 2. Is it available in the AUR?
    $ yay -Ss <name>
-   YES -> Use kdesu if available:
-          /usr/lib/kf6/kdesu -c "yay -S <package>"
+   YES -> WARNING: This will install "<package>" from AUR with ROOT privileges.
+          If kdesu available:
+             /usr/lib/kf6/kdesu -c "yay -S <package>"
    NO  -> go to step 3
 
 3. Use language-specific installer IN ISOLATION ONLY:
@@ -106,6 +112,12 @@ When the user needs to install software, follow this order:
 NEVER: sudo pip install, sudo npm install -g, or any global language-specific install.
 Global CLI tools MUST come from pacman or AUR.
 ```
+
+**⚠️ Before any installation, ALWAYS:**
+1. Explain what will be installed
+2. Show the exact command
+3. Warn about root privileges requirement
+4. Wait for explicit user confirmation
 
 ### Common Equivalence: Generic -> Manjaro
 
