@@ -14,8 +14,14 @@ echo "Installing manjaro-skill to ${DEST}..."
 mkdir -p "$(dirname "${DEST}")"
 
 if [ -d "${DEST}" ]; then
-    echo "Warning: ${DEST} already exists. Pulling latest..."
-    cd "${DEST}" && git pull origin "${BRANCH}"
+    if [ -d "${DEST}/.git" ]; then
+        echo "Updating existing installation..."
+        cd "${DEST}" && git pull origin "${BRANCH}"
+    else
+        echo "Warning: ${DEST} exists but is not a git repo. Removing and re-cloning..."
+        rm -rf "${DEST}"
+        git clone --depth 1 -b "${BRANCH}" "${REPO}" "${DEST}"
+    fi
 else
     git clone --depth 1 -b "${BRANCH}" "${REPO}" "${DEST}"
 fi
