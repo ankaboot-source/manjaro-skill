@@ -88,10 +88,10 @@ When you ask to install software on a Manjaro system, this skill enforces:
 
 | Instead of... | Use... |
 |--------------|--------|
-| `brew install htop` | `sudo pacman -S htop` |
-| `snap install code` | `yay -S visual-studio-code-bin` |
-| `curl ... \| sh` (arbitrary script) | `sudo pacman -S <package>` or `yay -S <package>` |
-| `npm -g install neovim` | `sudo pacman -S neovim` |
+| `brew install htop` | `pamac-installer htop` |
+| `snap install code` | `pamac-installer visual-studio-code-bin --build` |
+| `curl ... \| sh` | Check repos first: `pacman -Ss <name>` |
+| `npm -g install neovim` | `pamac-installer neovim` |
 
 ## Contents
 
@@ -151,3 +151,28 @@ This ensures:
 ## License
 
 [GPL-3.0](./LICENSE)
+
+## Update
+
+### Via skills.sh
+```bash
+npx skills update ankaboot-source/manjaro-skill
+```
+
+### Manual (git)
+```bash
+# Navigate to your skill directory
+cd ~/.config/opencode/skills/manjaro
+
+# Or wherever you installed it
+git pull origin master
+```
+
+### Reinstall (clean)
+```bash
+# Remove old version
+rm -rf ~/.config/opencode/skills/manjaro
+
+# Fresh install
+git clone https://github.com/ankaboot-source/manjaro-skill.git ~/.config/opencode/skills/manjaro
+```
