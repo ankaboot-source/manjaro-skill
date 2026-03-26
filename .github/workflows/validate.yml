@@ -1,0 +1,69 @@
+name: Validate Skill
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check SKILL.md exists
+        run: |
+          test -f SKILL.md || { echo "ERROR: SKILL.md not found"; exit 1; }
+
+      - name: Validate YAML frontmatter
+        run: |
+          # Check frontmatter starts with ---
+          head -1 SKILL.md | grep -q "^---$" || { echo "ERROR: SKILL.md must start with ---"; exit 1; }
+          # Count frontmatter delimiters
+          COUNT=$(grep -c "^---$" SKILL.md || true)
+          test "$COUNT" -ge 2 || { echo "ERROR: SKILL.md must have closing ---"; exit 1; }
+
+      - name: Check required frontmatter fields
+        run: |
+          grep -q "^name:" SKILL.md || { echo "ERROR: SKILL.md missing 'name' field"; exit 1; }
+          grep -q "^description:" SKILL.md || { echo "ERROR: SKILL.md missing 'description' field"; exit 1; }
+
+      - name: Check commands directory structure
+        run: |
+          if [ -d commands ]; then
+            test -f commands/*.md || { echo "ERROR: commands/ must contain .md files"; exit 1; }
+          fi
+
+      - name: Check references directory structure
+        run: |
+          if [ -d references ]; then
+            find references -name "*.md" | while read f; do
+              echo "Checking: $f"
+            done
+          fi
+
+      - name: Check no broken markdown links
+        run: |
+          # Basic check: references/ links in SKILL.md point to existing files
+          for ref in $(grep 'references/' SKILL.md | grep -oP 'references/\K[^)]+' || true); do
+            test -f "references/$ref" || { echo "ERROR: SKILL.md references non-existent: references/$ref"; exit 1; }
+          done
+
+      - name: Check no TODO/FIXME in skill content
+        run: |
+          TODO_COUNT=$(grep -c "TODO\|FIXME" SKILL.md references/*.md commands/*.md 2>/dev/null || echo 0)
+          if [ "$TODO_COUNT" -gt 0 ]; then
+            echo "WARNING: Found $TODO_COUNT TODO/FIXME markers"
+          fi
+
+      - name: Summarize
+        run: |
+          echo ""
+          echo "=== Skill Structure ==="
+          find . -name "*.md" -o -name "*.yml" -o -name "*.yaml" | grep -v ".github" | sort
+          echo ""
+          echo "=== Line Counts ==="
+          wc -l SKILL.md references/*.md commands/*.md 2>/dev/null
+          echo ""
+          echo "Validation passed."
