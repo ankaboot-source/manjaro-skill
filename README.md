@@ -86,10 +86,10 @@ When you ask to install software on a Manjaro system, this skill enforces:
 
 | Instead of... | Use... |
 |--------------|--------|
-| `sudo pip install black` | `sudo pacman -S python-black` |
-| `sudo npm install -g prettier` | `yay -S prettier` |
-| `snap install code` | `yay -S visual-studio-code-bin` |
 | `brew install htop` | `sudo pacman -S htop` |
+| `snap install code` | `yay -S visual-studio-code-bin` |
+| `curl ... \| sh` (arbitrary script) | `sudo pacman -S <package>` or `yay -S <package>` |
+| `npm -g install neovim` | `sudo pacman -S neovim` |
 
 ## Contents
 
@@ -112,6 +112,39 @@ manjaro/
 | Skills.sh | `npx skills add ankaboot-source/manjaro-skill` |
 | LobeHub | https://lobehub.com/skills/ankaboot-source/manjaro-skill |
 | SkillsHub | https://skillshub.wtf/ankaboot/manjaro-system-administration |
+
+## ⚠️ Safety
+
+**This skill helps AI suggest correct Manjaro commands. You always retain control.**
+
+### Recommended OpenCode Configuration
+
+Add this to `~/.config/opencode/opencode.json` to require approval before running system changes:
+
+```json
+{
+  "permission": {
+    "bash": {
+      "*": "ask",
+      "pacman -Ss *": "allow",
+      "yay -Ss *": "allow",
+      "systemctl status *": "allow",
+      "journalctl *": "allow",
+      "git *": "allow"
+    }
+  }
+}
+```
+
+This ensures:
+- `sudo pacman -S ...`, `yay -S ...` → **requires approval**
+- Search queries, status checks, git → **auto-allow**
+
+### Best Practices
+
+- Always review commands before running, especially those with `sudo`
+- Create Timeshift snapshots before major changes
+- The AI *suggests* commands — you decide what runs
 
 ## License
 

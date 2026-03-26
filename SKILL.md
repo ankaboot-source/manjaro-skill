@@ -18,6 +18,43 @@ management, systemd for services, and adds its own tools for hardware detection 
 and kernel management. This skill ensures you always prefer native Manjaro tools over
 generic cross-platform alternatives.
 
+## ⚠️ Safety Principle: User Control
+
+**This skill helps the AI suggest correct Manjaro commands. You retain full control.**
+
+### Permission Configuration (Recommended)
+
+Add this to your OpenCode config (`~/.config/opencode/opencode.json`) to require approval for system changes:
+
+```json
+{
+  "permission": {
+    "bash": {
+      "*": "ask",
+      "pacman -Ss *": "allow",
+      "yay -Ss *": "allow",
+      "systemctl status *": "allow",
+      "journalctl *": "allow",
+      "git *": "allow"
+    }
+  }
+}
+```
+
+This ensures:
+- `sudo pacman -S ...`, `yay -S ...` → **requires approval** ("ask")
+- Search queries (`pacman -Ss`, `yay -Ss`) → **auto-allow**
+- Status checks, logs, git → **auto-allow**
+
+### General Safety Guidelines
+
+When suggesting commands that modify the system:
+
+1. **Always explain** what the command will do before running it
+2. **Warn about consequences** (e.g., "This will remove package X and its dependencies")
+3. **Create snapshots** before risky operations (see Timeshift section)
+4. **Prefer reversible operations** when possible
+
 ## Core Principle: Pacman First
 
 On a Manjaro system, **always prefer native package management** over language-specific
@@ -51,15 +88,14 @@ Global CLI tools MUST come from pacman or AUR.
 
 ### Common Equivalence: Generic -> Manjaro
 
-| Instead of...                  | Use...                                    |
-|-------------------------------|-------------------------------------------|
-| `sudo pip install black`      | `sudo pacman -S python-black`             |
-| `sudo npm install -g prettier`| `yay -S prettier`                         |
-| `sudo pip install ansible`    | `sudo pacman -S ansible`                  |
-| `curl -fsSL ... \| sh`       | Check `pacman -Ss` / `yay -Ss` first     |
-| `snap install code`           | `yay -S visual-studio-code-bin`           |
-| `brew install htop`           | `sudo pacman -S htop`                     |
-| `apt install / dnf install`   | `sudo pacman -S`                          |
+| Instead of...                | Use...                          |
+|-----------------------------|----------------------------------|
+| `brew install htop`         | `sudo pacman -S htop`           |
+| `snap install code`         | `yay -S visual-studio-code-bin`  |
+| `curl -fsSL ... \| sh`     | Check `pacman -Ss` / `yay -Ss` first |
+| `npm -g install neovim`    | `sudo pacman -S neovim`         |
+| `cargo install fd`          | `sudo pacman -S fd`              |
+| `pip install httpie`       | `sudo pacman -S httpie`          |
 
 For the full equivalence table and command reference, read `references/packages.md`.
 
