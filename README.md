@@ -33,7 +33,7 @@ cp -r manjaro ~/.claude/skills/
 
 **Or install via marketplace (Claude Code):**
 ```bash
-claude install baderdean/manjaro-skill
+claude install ankaboot-source/manjaro-skill
 ```
 
 ### Use
