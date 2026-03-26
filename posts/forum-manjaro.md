@@ -40,11 +40,12 @@ The skill launches Manjaro's native Pamac GUI — you see what will be installed
 ## Install
 
 ```bash
-# Via skills.sh (works with Claude Code, Codex, Cursor, OpenCode)
+# Via skills.sh (recommended)
 npx skills add ankaboot-source/manjaro-skill
 
-# Or via install script
-curl -fsSL https://raw.githubusercontent.com/ankaboot-source/manjaro-skill/master/install.sh | bash
+# Or manual install
+git clone https://github.com/ankaboot-source/manjaro-skill.git
+cp -r manjaro-skill ~/.config/opencode/skills/manjaro
 ```
 
 ## Usage

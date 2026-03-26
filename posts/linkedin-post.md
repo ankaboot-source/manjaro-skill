@@ -12,10 +12,16 @@ Ask it to install software → it suggests `pip install --global`, `npm -g`, `sn
 
 On Ubuntu? Fine. On Manjaro or Arch? It bypasses pacman, creates conflicts, breaks upgrades.
 
-I built a skill that fixes this. One line:
+I built a skill that fixes this. Installation:
 
 ```
 npx skills add ankaboot-source/manjaro-skill
+```
+
+Or manual:
+```
+git clone https://github.com/ankaboot-source/manjaro-skill.git
+cp -r manjaro-skill ~/.config/opencode/skills/manjaro
 ```
 
 Now your AI thinks in pacman first, yay for AUR, and reserves pip/npm for isolated environments only. On Manjaro, it launches the Pamac GUI for installation confirmation — you see what will be installed before anything runs.

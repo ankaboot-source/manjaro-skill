@@ -54,8 +54,9 @@ NEVER: sudo pip install, npm -g, snap install, brew install
 # Via skills.sh (works with Claude Code, Codex, Cursor, OpenCode)
 npx skills add ankaboot-source/manjaro-skill
 
-# Or via install script
-curl -fsSL https://raw.githubusercontent.com/ankaboot-source/manjaro-skill/master/install.sh | bash
+# Or manual install
+git clone https://github.com/ankaboot-source/manjaro-skill.git
+cp -r manjaro-skill ~/.config/opencode/skills/manjaro
 ```
 
 That's it. The skill installs to `~/.config/opencode/skills/manjaro/` and activates automatically.
@@ -65,18 +66,18 @@ That's it. The skill installs to `~/.config/opencode/skills/manjaro/` and activa
 ### Before (without the skill)
 
 ```
-You: Install httpie on my Manjaro system
-AI:  sudo pip install httpie
+You: Install htop on my Manjaro system
+AI:  brew install htop
 ```
 
 ### After (with the skill)
 
 ```
-You: Install httpie on my Manjaro system
-AI:  sudo pacman -S httpie
-
-(Or, if not in repos): yay -S httpie
+You: Install htop on my Manjaro system
+AI:  pamac-installer htop
 ```
+
+The skill launches Manjaro's native Pamac GUI — you see what will be installed and confirm before anything runs.
 
 ## The /manjaro Slash Command
 

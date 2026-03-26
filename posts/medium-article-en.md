@@ -105,10 +105,11 @@ As a PM/PSM, I work with developers who also use Linux. This skill isn't just fo
 npx skills add ankaboot-source/manjaro-skill
 ```
 
-Or via install script:
+Or manual install:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ankaboot-source/manjaro-skill/master/install.sh | bash
+git clone https://github.com/ankaboot-source/manjaro-skill.git
+cp -r manjaro-skill ~/.config/opencode/skills/manjaro
 ```
 
 Works with: OpenCode, Claude Code, Codex, Cursor.

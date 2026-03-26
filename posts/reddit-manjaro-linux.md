@@ -39,15 +39,18 @@ It's a ~15KB instruction set that teaches AI assistants the pacman-first hierarc
 - 12 troubleshooting flows (broken updates, GPU issues, boot failures...)
 - Maintenance (cache cleanup, orphan removal, kernel management)
 
-## Install (one line)
+## Install (safe methods)
 
 ```bash
-# OpenCode / Claude Code
+# Via skills.sh (recommended)
 npx skills add ankaboot-source/manjaro-skill
 
-# Or via marketplace
-curl -fsSL https://raw.githubusercontent.com/ankaboot-source/manjaro-skill/master/install.sh | bash
+# Or manual install
+git clone https://github.com/ankaboot-source/manjaro-skill.git
+cp -r manjaro-skill ~/.config/opencode/skills/manjaro
 ```
+
+No curl | bash — you control what gets installed.
 
 ## Before / After Example
 

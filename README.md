@@ -37,17 +37,19 @@ Ask any AI assistant to install software on Manjaro → it defaults to `pip inst
 
 ## Install
 
-### One-line (any terminal)
+### Via skills.sh (recommended)
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ankaboot-source/manjaro-skill/master/install.sh | bash
+npx skills add ankaboot-source/manjaro-skill
 ```
 
-### Via Package Manager
+### Manual install
 ```bash
-# Skills.sh (works with Claude Code, Codex, Cursor, OpenCode)
-npx skills add ankaboot-source/manjaro-skill
+git clone https://github.com/ankaboot-source/manjaro-skill.git
+cp -r manjaro-skill ~/.config/opencode/skills/manjaro
+```
 
-# Claude Code
+### Claude Code
+```bash
 claude install ankaboot-source/manjaro-skill
 ```
 

@@ -72,10 +72,11 @@ Après : sudo pacman -S htop    # 😎
 npx skills add ankaboot-source/manjaro-skill
 ```
 
-Ou via le script :
+Ou installation manuelle :
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ankaboot-source/manjaro-skill/master/install.sh | bash
+git clone https://github.com/ankaboot-source/manjaro-skill.git
+cp -r manjaro-skill ~/.config/opencode/skills/manjaro
 ```
 
 ## Pourquoi j'ai fait ça

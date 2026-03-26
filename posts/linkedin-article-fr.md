@@ -75,7 +75,13 @@ Je suis aussi l'auteur de [leadminer.io](https://leadminer.io) — une interface
 **Le skill est open source (GPL-3.0) :**
 
 🔗 [github.com/ankaboot-source/manjaro-skill](https://github.com/ankaboot-source/manjaro-skill)
-📦 `npx skills add ankaboot-source/manjaro-skill`
+📦 Installation :
+```bash
+npx skills add ankaboot-source/manjaro-skill
+# ou
+git clone https://github.com/ankaboot-source/manjaro-skill.git
+cp -r manjaro-skill ~/.config/opencode/skills/manjaro
+```
 
 ---
 
