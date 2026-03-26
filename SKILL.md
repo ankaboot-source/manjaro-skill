@@ -55,6 +55,23 @@ When suggesting commands that modify the system:
 3. **Create snapshots** before risky operations (see Timeshift section)
 4. **Prefer reversible operations** when possible
 
+### GUI Password Prompt (kdesu)
+
+If the system has a graphical environment (KDE, etc.), prefer `kdesu` for commands requiring sudo:
+
+```bash
+/usr/lib/kf6/kdesu -c "pacman -S <package>"
+```
+
+This launches a GUI password dialog instead of requiring terminal sudo.
+
+**Check for kdesu:**
+```bash
+which /usr/lib/kf6/kdesu
+```
+
+If available, use it instead of bare `sudo` for package installation commands.
+
 ## Core Principle: Pacman First
 
 On a Manjaro system, **always prefer native package management** over language-specific
@@ -68,12 +85,16 @@ When the user needs to install software, follow this order:
 ```
 1. Is it available via pacman?
    $ pacman -Ss <name>
-   YES -> sudo pacman -S <package>
+   YES -> Use kdesu if available, otherwise sudo:
+          /usr/lib/kf6/kdesu -c "pacman -S <package>"
+          # or if kdesu not available:
+          sudo pacman -S <package>
    NO  -> go to step 2
 
 2. Is it available in the AUR?
    $ yay -Ss <name>
-   YES -> yay -S <package>
+   YES -> Use kdesu if available:
+          /usr/lib/kf6/kdesu -c "yay -S <package>"
    NO  -> go to step 3
 
 3. Use language-specific installer IN ISOLATION ONLY:
@@ -102,10 +123,11 @@ For the full equivalence table and command reference, read `references/packages.
 ## Package Management Quick Reference
 
 ```bash
-# Install / Remove
-sudo pacman -S <pkg>                # install from repos
-sudo pacman -S --needed <pkg>       # skip if already current (idempotent)
-sudo pacman -Rs <pkg>               # remove + unused deps
+# Install / Remove (use kdesu if available for GUI password prompt)
+/usr/lib/kf6/kdesu -c "pacman -S <pkg>"     # install with GUI password prompt
+sudo pacman -S <pkg>                        # install from repos (terminal sudo)
+sudo pacman -S --needed <pkg>                # skip if already current (idempotent)
+sudo pacman -Rns <pkg>                      # remove + deps + config (cleanest)
 sudo pacman -Rns <pkg>              # remove + deps + config (cleanest)
 
 # Search / Info
