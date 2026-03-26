@@ -55,26 +55,31 @@ When suggesting commands that modify the system:
 3. **Create snapshots** before risky operations (see Timeshift section)
 4. **Prefer reversible operations** when possible
 
-### GUI Password Prompt (kdesu)
+### GUI Package Installer (pamac-installer)
 
-If the system has a graphical environment (KDE), use `kdesu` for commands requiring sudo:
+Use Manjaro's native GUI package installer for package installation:
 
 ```bash
-/usr/lib/kf6/kdesu -c "pacman -S <package>"
+pamac-installer <package>
 ```
 
-**⚠️ WARNING: This will execute the command with ROOT PRIVILEGES immediately after you enter your password.**
+**⚠️ WARNING: This will launch the Pamac GUI to install "<package>" from Manjaro repositories.**
 
-**Check for kdesu:**
+**Check for pamac-installer:**
 ```bash
-which /usr/lib/kf6/kdesu
+which pamac-installer
 ```
 
-**Always explain before running kdesu:**
-1. State clearly: "I need to run this command with root privileges to install the package"
-2. Show the exact command that will run
-3. Warn: "This will install <package> and all its dependencies from the Manjaro repositories"
+**Always explain before running pamac-installer:**
+1. State clearly: "I will launch the Pamac package manager to install <package>"
+2. Show: "Command: pamac-installer <package>"
+3. Explain: "This opens a graphical window where you can review and confirm the installation"
 4. Wait for user confirmation before executing
+
+**For AUR packages, use:**
+```bash
+pamac-installer <package> --build
+```
 
 ## Core Principle: Pacman First
 
@@ -89,18 +94,16 @@ When the user needs to install software, follow this order:
 ```
 1. Is it available via pacman?
    $ pacman -Ss <name>
-   YES -> WARNING: This will install "<package>" with ROOT privileges.
-          If kdesu available:
-             /usr/lib/kf6/kdesu -c "pacman -S <package>"
-          Otherwise:
-             sudo pacman -S <package>
+   YES -> ⚠️ WARNING: This will install "<package>" from Manjaro repositories.
+          Launch Pamac GUI:
+             pamac-installer <package>
    NO  -> go to step 2
 
 2. Is it available in the AUR?
    $ yay -Ss <name>
-   YES -> WARNING: This will install "<package>" from AUR with ROOT privileges.
-          If kdesu available:
-             /usr/lib/kf6/kdesu -c "yay -S <package>"
+   YES -> ⚠️ WARNING: This will install "<package>" from AUR.
+          Launch Pamac GUI with AUR support:
+             pamac-installer <package> --build
    NO  -> go to step 3
 
 3. Use language-specific installer IN ISOLATION ONLY:
@@ -116,31 +119,30 @@ Global CLI tools MUST come from pacman or AUR.
 **⚠️ Before any installation, ALWAYS:**
 1. Explain what will be installed
 2. Show the exact command
-3. Warn about root privileges requirement
+3. Warn that a GUI window will open for confirmation
 4. Wait for explicit user confirmation
 
 ### Common Equivalence: Generic -> Manjaro
 
 | Instead of...                | Use...                          |
 |-----------------------------|----------------------------------|
-| `brew install htop`         | `sudo pacman -S htop`           |
-| `snap install code`         | `yay -S visual-studio-code-bin`  |
+| `brew install htop`         | `pamac-installer htop`          |
+| `snap install code`         | `pamac-installer visual-studio-code-bin --build` |
 | `curl -fsSL ... \| sh`     | Check `pacman -Ss` / `yay -Ss` first |
-| `npm -g install neovim`    | `sudo pacman -S neovim`         |
-| `cargo install fd`          | `sudo pacman -S fd`              |
-| `pip install httpie`       | `sudo pacman -S httpie`          |
+| `npm -g install neovim`    | `pamac-installer neovim`        |
+| `cargo install fd`          | `pamac-installer fd`             |
+| `pip install httpie`       | `pamac-installer httpie`        |
 
 For the full equivalence table and command reference, read `references/packages.md`.
 
 ## Package Management Quick Reference
 
 ```bash
-# Install / Remove (use kdesu if available for GUI password prompt)
-/usr/lib/kf6/kdesu -c "pacman -S <pkg>"     # install with GUI password prompt
-sudo pacman -S <pkg>                        # install from repos (terminal sudo)
-sudo pacman -S --needed <pkg>                # skip if already current (idempotent)
-sudo pacman -Rns <pkg>                      # remove + deps + config (cleanest)
-sudo pacman -Rns <pkg>              # remove + deps + config (cleanest)
+# Install / Remove (prefer pamac-installer for GUI)
+/usr/bin/pamac-installer <pkg>          # install from repos (opens GUI)
+sudo pacman -S <pkg>                   # install from repos (terminal)
+sudo pacman -S --needed <pkg>           # skip if already current (idempotent)
+sudo pacman -Rns <pkg>                 # remove + deps + config (cleanest)
 
 # Search / Info
 pacman -Ss <query>                  # search remote repos
