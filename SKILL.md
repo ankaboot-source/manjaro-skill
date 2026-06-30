@@ -1,14 +1,17 @@
 ---
 name: manjaro
 description: >-
-  Manjaro Linux system administration skill. Use this skill whenever the user asks about
-  installing packages, managing services, configuring their system, maintaining or
-  troubleshooting Manjaro or Arch Linux, or when you detect the host is Manjaro/Arch.
-  Trigger on mentions of pacman, yay, makepkg, PKGBUILD, systemctl, journalctl, mhwd,
-  mkinitcpio, grub, manjaro-chroot, arch-chroot, timeshift, btrfs snapshots, pamac,
-  pacman.conf, mirrorlist, or any Arch/Manjaro system task. Also trigger when the user
-  wants to install software (npm/pip/cargo global tools, CLI utilities, system packages)
-  on a Manjaro system — this skill enforces pacman/AUR-first package resolution.
+  Manjaro/Arch Linux package and system administration skill. Activate this skill
+  whenever the user asks to install, update, remove, or manage software — especially
+  Python packages, pip, uv, venv, virtualenv, requirements.txt, Poetry, npm, cargo,
+  go, CLI tools, system packages, services, drivers, kernels, or configuration.
+  Trigger on any install request (e.g. "install", "pip install", "uv add",
+  "npm install", "package not found", "externally-managed environment"), pacman,
+  yay, pamac, PKGBUILD, makepkg, systemctl, journalctl, mhwd, mkinitcpio, grub,
+  manjaro-chroot, arch-chroot, timeshift, btrfs snapshots, pacman.conf, mirrorlist,
+  or any Linux system administration task. Once activated, verify the host
+  distribution; if it is Manjaro or Arch Linux, enforce pacman/AUR-first package
+  resolution and uv-based Python virtual environments when isolation is required.
 ---
 
 # Manjaro Linux System Administration
@@ -17,6 +20,23 @@ Manjaro is a rolling-release distribution based on Arch Linux. It uses pacman fo
 management, systemd for services, and adds its own tools for hardware detection (mhwd)
 and kernel management. This skill ensures you always prefer native Manjaro tools over
 generic cross-platform alternatives.
+
+**Platform check:** This skill was activated because the request involves installing or
+managing software. Before applying any command, verify the host distribution:
+
+```bash
+cat /etc/os-release
+# or
+uname -a
+```
+
+- If the output contains `Manjaro`, `Arch`, or `EndeavourOS` (Arch-based), apply this skill.
+- If the output is another distribution (Ubuntu, Debian, Fedora, etc.), **stop** using this
+  skill and switch to the appropriate platform guidance, or ask the user for confirmation.
+- If you cannot determine the distribution, ask the user: "Are you on Manjaro/Arch Linux?"
+
+The default system-wide package manager on Manjaro/Arch is `pacman` (GUI:
+`pamac-installer`), not `pip`, `npm -g`, or `cargo install`.
 
 ## ⚠️ Safety Principle: User Control
 
@@ -107,10 +127,12 @@ When the user needs to install software, follow this order:
    NO  -> go to step 3
 
 3. Use language-specific installer IN ISOLATION ONLY:
-   - pip:   python -m venv .venv && source .venv/bin/activate && pip install <pkg>
-   - npm:   npm install <pkg>            (local node_modules, NEVER npm -g)
-   - cargo: cargo install <pkg>          (goes to ~/.cargo/bin)
-   - go:    go install <pkg>@latest      (goes to ~/go/bin)
+   - Python: prefer `uv` (install `uv` itself from pacman/AUR first)
+             `uv venv && uv pip install <pkg>`
+             (NEVER `sudo pip install`; NEVER plain `pip install` in a managed environment)
+   - npm:    npm install <pkg>            (local node_modules, NEVER npm -g)
+   - cargo:  cargo install <pkg>          (goes to ~/.cargo/bin)
+   - go:     go install <pkg>@latest      (goes to ~/go/bin)
 
 NEVER: sudo pip install, sudo npm install -g, or any global language-specific install.
 Global CLI tools MUST come from pacman or AUR.
@@ -131,9 +153,114 @@ Global CLI tools MUST come from pacman or AUR.
 | `curl -fsSL ... \| sh`     | Check `pacman -Ss` / `yay -Ss` first |
 | `npm -g install neovim`    | `pamac-installer neovim`        |
 | `cargo install fd`          | `pamac-installer fd`             |
-| `pip install httpie`       | `pamac-installer httpie`        |
+| `pip install httpie`       | `pamac-installer python-httpie` |
+| `pip install <pkg>`        | `pamac-installer python-<pkg>` or `uv venv && uv pip install <pkg>` |
 
 For the full equivalence table and command reference, read `references/packages.md`.
+
+## Python Packaging on Manjaro
+
+On Manjaro, Python packages belong to the system package manager unless there is a
+specific reason to isolate them. This prevents the "externally-managed environment"
+errors from `pip`, keeps system updates coherent, and lets the rolling release handle
+security fixes.
+
+### Python Package Resolution Order
+
+```
+1. Need a Python library/CLI tool?
+   Search pacman first:
+      $ pacman -Ss python-<name>
+   YES -> Install with GUI:
+             pamac-installer python-<name>
+   NO  -> go to step 2
+
+2. Not in repos?
+   Search the AUR:
+      $ yay -Ss python-<name>
+   YES -> Build/install with GUI:
+             pamac-installer python-<name> --build
+   NO  -> go to step 3
+
+3. Only NOW use an isolated Python environment:
+   - Make sure `uv` is installed system-wide:
+        pamac-installer uv
+   - Create a project venv and install the package inside it:
+        uv venv .venv
+        uv pip install <pkg>
+   - For a project, prefer:
+        uv add <pkg>
+        uv run <your-script>
+```
+
+### Hard Rules
+
+| Never do this | Why | Do this instead |
+|---|---|---|
+| `sudo pip install <pkg>` | Breaks system Python, conflicts with pacman | `pamac-installer python-<pkg>` |
+| `pip install <pkg>` outside a venv | Triggers "externally-managed environment" error or pollutes `/usr` | `uv venv .venv && uv pip install <pkg>` |
+| `python -m venv .venv && source .venv/bin/activate && pip install <pkg>` | Works but slower and less ergonomic than `uv` | `uv venv && uv pip install <pkg>` or `uv add <pkg>` |
+| Install `uv` with `curl \| sh` | Bypasses the system package manager | `pamac-installer uv` or `pamac-installer uv --build` |
+
+### Installing uv (system-wide)
+
+`uv` is a CLI tool and must come from pacman/AUR like any other global binary:
+
+```bash
+# Search first
+pacman -Ss uv
+
+# Install via GUI (preferred)
+pamac-installer uv
+
+# If only in AUR
+pamac-installer uv --build
+```
+
+### Creating a Project Venv with uv
+
+```bash
+# In your project directory
+uv venv .venv
+
+# Install one-off dependencies inside the venv
+uv pip install requests
+
+# Or manage the project properly (recommended)
+uv init --bare        # creates pyproject.toml if missing
+uv add requests
+uv run python myscript.py
+```
+
+### Essential Python Packages Already in Repos
+
+Many commonly needed packages are packaged as `python-<name>`:
+
+| Need | Manjaro package |
+|---|---|
+| `requests` | `python-requests` |
+| `numpy` | `python-numpy` |
+| `pandas` | `python-pandas` |
+| `pytest` | `python-pytest` |
+| `pydantic` | `python-pydantic` |
+| `flask` | `python-flask` |
+| `django` | `python-django` |
+| `beautifulsoup4` | `python-beautifulsoup4` |
+| `lxml` | `python-lxml` |
+| `pillow` | `python-pillow` |
+| `virtualenv` | `python-virtualenv` |
+
+Always search `pacman -Ss python-<name>` before assuming a package is missing.
+
+### When to Use a Venv
+
+Use an isolated environment (with `uv`) when:
+- The package is not in pacman/AUR.
+- You need a specific version that conflicts with the system package.
+- You are developing a project with its own dependency tree.
+- You are running third-party code that bundles many Python deps.
+
+For everything else, install `python-<pkg>` system-wide via `pamac-installer`.
 
 ## Package Management Quick Reference
 
